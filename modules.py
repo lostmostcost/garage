@@ -62,12 +62,13 @@ def retry_on_failure(max_retries=30, retry_status_code=307):
         return wrapper
     return decorator
 
-@retry_on_failure
-@im_not_a_robot
-def get_request(url, headers=None):
-    if headers is None:
-        headers = {}
-    response = requests.get(url, headers=headers)
+@im_not_a_robot()
+@retry_on_failure()
+def get_request(*args, **kwargs):
+    if 'headers' not in kwargs:
+        kwargs['headers'] = {}
+    headers = kwargs['headers']
+    response = requests.get(*args, **kwargs)
     response.raise_for_status()
     return response
 
